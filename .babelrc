@@ -1,0 +1,25 @@
+{
+  "presets": ["next/babel"],
+  "env": {
+    "production": {
+      "plugins": [
+        [
+          "transform-remove-console",
+          { "exclude": [ "time", "timeEnd"] }
+        ],
+        [
+          "styled-components",
+          { "ssr": true, "displayName": false, "preprocess": true }
+        ]
+      ]
+    },
+    "development": {
+      "plugins": [
+        [
+          "styled-components",
+          { "ssr": true, "displayName": true, "preprocess": true }
+        ]
+      ]
+    }
+  }
+}
