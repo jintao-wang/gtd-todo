@@ -1,14 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import CircleLabel from '../../common/circle_label';
-import DateIcon from "../../common/date_icon";
+import DateIcon from '../../common/date_icon';
 
 export default function Today() {
   return (
     <ContainerSC>
       <TitleSC>
         <DateIconSC>
-          <DateIcon />
+          <DateIcon date={new Date().getDate().toString()} />
         </DateIconSC>
         <span>Today</span>
       </TitleSC>
@@ -18,7 +18,14 @@ export default function Today() {
             size={22}
             circleColor="rgb(242, 216, 125)"
           />
-          <TodoDesSC>复习英标并学习e音</TodoDesSC>
+          <TodoDesSC>比特币指数</TodoDesSC>
+        </TodoItemSC>
+        <TodoItemSC>
+          <CircleLabel
+            size={22}
+            circleColor="rgb(242, 216, 125)"
+          />
+          <TodoDesSC>想要去美丽的图二区亲爱的</TodoDesSC>
         </TodoItemSC>
         <TodoItemSC>
           <CircleLabel
@@ -33,12 +40,11 @@ export default function Today() {
 }
 
 const ContainerSC = styled('div')`
-  border-radius: 4px;
   color: rgb(255, 255, 255);
   text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
   user-select: none;
   cursor: pointer;
-  //padding-left: 40px;
+  padding: 8px 20px;
 `;
 
 const TitleSC = styled('div')`
@@ -61,12 +67,12 @@ const DateIconSC = styled('div')`
 `;
 
 const TodoListSC = styled('div')`
-  
+  margin-top: 10px;
 `;
 
 const TodoItemSC = styled('div')`
   display: flex;
-  margin: 5px 0;
+  margin: 8px 0;
 `;
 
 const TodoDesSC = styled('div')`

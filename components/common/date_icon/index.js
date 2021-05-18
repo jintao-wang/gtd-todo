@@ -4,21 +4,24 @@ import PropTypes from 'prop-types';
 
 export default function DateIcon({
   size,
+  date,
 }) {
   return (
     <ContainerSC size={size}>
       <TopPartSC />
-      <DatePartSC>22</DatePartSC>
+      <DatePartSC>{date}</DatePartSC>
     </ContainerSC>
   );
 }
 
 DateIcon.propTypes = {
   size: PropTypes.number,
+  date: PropTypes.string,
 };
 
 DateIcon.defaultProps = {
   size: 22,
+  date: 22,
 };
 
 const ContainerSC = styled('div', 'size')`

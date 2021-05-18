@@ -1,13 +1,103 @@
-import React, { useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 
 export default function Drag({
   children,
+  position,
 }) {
   const dragRef = useRef(null);
+  const [_position, setPosition] = useState({
+    left: '0px',
+    top: '0px',
+  });
+
+  useEffect(() => {
+    if (!position) return;
+    if (typeof position === 'object') {
+      setPosition(position);
+      return;
+    }
+    const leftCenter = `${document.body.clientWidth / 2 - dragRef.current.clientWidth / 2}px`;
+    const leftRight = `${document.body.clientWidth - dragRef.current.clientWidth}px`;
+    const topCenter = `${document.body.clientHeight / 2 - dragRef.current.clientHeight / 2}px`;
+    const topBottom = `${document.body.clientHeight - dragRef.current.clientHeight}px`;
+
+    switch (position) {
+      case 'top_left':
+        setPosition({
+          left: '0px',
+          top: '0px',
+        });
+        break;
+      case 'top_center':
+        setPosition({
+          left: leftCenter,
+          top: '0px',
+        });
+        break;
+      case 'top_right':
+        setPosition({
+          left: leftRight,
+          top: '0px',
+        });
+        break;
+      case 'right_center':
+        setPosition({
+          left: leftRight,
+          top: topCenter,
+        });
+        break;
+      case 'right_bottom':
+        setPosition({
+          left: leftRight,
+          top: topBottom,
+        });
+        break;
+      case 'bottom_center':
+        setPosition({
+          left: leftCenter,
+          top: topBottom,
+        });
+        break;
+      case 'bottom_left':
+        setPosition({
+          left: 0,
+          top: topBottom,
+        });
+        break;
+      case 'left_center':
+        setPosition({
+          left: 0,
+          top: topCenter,
+        });
+        break;
+      case 'left_top':
+        setPosition({
+          left: '0px',
+          top: '0px',
+        });
+        break;
+      case 'left_bottom':
+        setPosition({
+          left: 0,
+          top: topBottom,
+        });
+        break;
+      case 'center':
+        setPosition({
+          left: leftCenter,
+          top: topCenter,
+        });
+        break;
+      default:
+        break;
+    }
+  }, []);
 
   const onMouseDown = (event) => {
+    console.log(dragRef.current.getBoundingClientRect().left);
+    console.log(dragRef.current.getBoundingClientRect().top);
     const shiftX = event.clientX - dragRef.current.getBoundingClientRect().left;
     const shiftY = event.clientY - dragRef.current.getBoundingClientRect().top;
 
@@ -34,6 +124,7 @@ export default function Drag({
     <ContainerSC
       ref={dragRef}
       onMouseDown={onMouseDown}
+      positionSC={_position}
     >
       {
         children
@@ -44,12 +135,24 @@ export default function Drag({
 
 Drag.propTypes = {
   children: PropTypes.node.isRequired,
+  position: PropTypes.shape({
+    left: PropTypes.string,
+    top: PropTypes.string,
+  }) || PropTypes.string,
 };
 
-const ContainerSC = styled('div')`
+Drag.defaultProps = {
+  position: {
+    left: '0px',
+    top: '0px',
+  },
+};
+
+const ContainerSC = styled('div', 'positionSC')`
+  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
+  border-radius: 12px;
+  height: fit-content;
+  width: fit-content;
   position: absolute;
-  left: 0;
-  top: 0;
-  user-select: none;
-  cursor: pointer;
+  ${(props) => props.positionSC};
 `;
