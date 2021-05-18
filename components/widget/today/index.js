@@ -1,18 +1,49 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
+import CurrentUser from 'data/user';
 import CircleLabel from '../../common/circle_label';
 import DateIcon from '../../common/date_icon';
 
 export default function Today() {
+  const bodyData = {
+    action: {
+      content: '阿萨德大放送',
+      timeStamp: new Date().getTime() - 1000 * 60 * 60 * 24,
+    },
+  };
+  const handleAddOneAction = () => {
+    fetch('/api/action/add-one', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${CurrentUser.current.token}`,
+      },
+      body: JSON.stringify(bodyData),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+  const get = () => {
+    fetch('/api/action/today-actions', {
+      headers: {
+        Authorization: `Bearer ${CurrentUser.current.token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      });
+  };
   return (
     <ContainerSC>
       <TitleSC>
-        <DateIconSC>
+        <DateIconSC onClick={handleAddOneAction}>
           <DateIcon date={new Date().getDate().toString()} />
         </DateIconSC>
         <span>Today</span>
       </TitleSC>
-      <TodoListSC>
+      <TodoListSC onClick={get}>
         <TodoItemSC>
           <CircleLabel
             size={22}

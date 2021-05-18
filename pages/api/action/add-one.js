@@ -1,6 +1,8 @@
 const firebase = require('_firebase/server');
 
 export default async (req, res) => {
+  const { action } = JSON.parse(req.body);
+
   const validateFirebaseIdToken = async () => {
     console.log('Check if request is authorized with Firebase ID token');
 
@@ -35,16 +37,17 @@ export default async (req, res) => {
       return decodedIdToken;
     } catch (error) {
       console.error('Error while verifying Firebase ID token:', error);
-      res.status(403).send('Unauthorized');
     }
   };
   const user = await validateFirebaseIdToken();
-  firebase.app().firebaseDB.collection('users').doc(user.uid).set({
-    email: user.email,
+  firebase.app().firebaseDB.collection('actions').doc(`${user.uid}_${new Date().getTime()}`).set({
+    ...action,
+    date: new Date(action.timeStamp),
+    user: user.uid,
   })
     .then(() => res.status(200).json({
       code: '200',
-      message: 'registerSuccess',
+      message: 'addSuccess',
     }))
     .catch((error) => console.error('Error adding document: ', error));
 };

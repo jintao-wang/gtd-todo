@@ -35,16 +35,26 @@ export default async (req, res) => {
       return decodedIdToken;
     } catch (error) {
       console.error('Error while verifying Firebase ID token:', error);
-      res.status(403).send('Unauthorized');
     }
   };
   const user = await validateFirebaseIdToken();
-  firebase.app().firebaseDB.collection('users').doc(user.uid).set({
-    email: user.email,
-  })
-    .then(() => res.status(200).json({
-      code: '200',
-      message: 'registerSuccess',
-    }))
-    .catch((error) => console.error('Error adding document: ', error));
+  const actionsRef = firebase.app().firebaseDB.collection('actions');
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59);
+  const actions = await actionsRef
+    .where('user', '==', user.uid)
+    .where('date', '>=', todayStart)
+    .where('date', '<=', todayEnd)
+    .get();
+  const result = [];
+  actions.forEach((doc) => {
+    result.push(doc.data());
+  });
+
+  res.status(200).json({
+    code: '200',
+    message: result,
+  });
 };

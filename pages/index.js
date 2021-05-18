@@ -36,7 +36,7 @@ export default () => {
       {
         isSignForm && (
           <Drag
-            position="center"
+            position="left_center"
           >
             <Login
               signType={signType}
