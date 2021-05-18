@@ -4,7 +4,7 @@ import Drag from 'components/common/drag';
 import Today from 'components/widget/today';
 import Login from 'components/common/login';
 import { signedStore, emailStore } from 'store';
-import app from '../_firebase/client';
+import firebaseAuth from '../_firebase/client';
 import CurrentUser from '../data/user';
 
 export default () => {
@@ -14,7 +14,7 @@ export default () => {
   const [emailState, emailActions] = emailStore.useModel();
 
   useEffect(() => {
-    app.auth().onAuthStateChanged((user) => {
+    firebaseAuth.onAuthStateChanged((user) => {
       if (user) {
         CurrentUser.current = user;
         emailActions.setEmail(CurrentUser.current.email);
@@ -31,18 +31,6 @@ export default () => {
     });
   }, []);
 
-  const test = () => {
-    fetch('/api/user/test', {
-      headers: {
-        Authorization: `Bearer ${CurrentUser.current.token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-      });
-  };
-
   return (
     <ContainerSC>
       {
@@ -52,10 +40,7 @@ export default () => {
           >
             <Login
               signType={signType}
-              onClose={() => {
-                setIsSignForm(false);
-                test();
-              }}
+              onClose={() => setIsSignForm(false)}
             />
           </Drag>
         )

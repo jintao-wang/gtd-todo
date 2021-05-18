@@ -96,8 +96,6 @@ export default function Drag({
   }, []);
 
   const onMouseDown = (event) => {
-    console.log(dragRef.current.getBoundingClientRect().left);
-    console.log(dragRef.current.getBoundingClientRect().top);
     const shiftX = event.clientX - dragRef.current.getBoundingClientRect().left;
     const shiftY = event.clientY - dragRef.current.getBoundingClientRect().top;
 

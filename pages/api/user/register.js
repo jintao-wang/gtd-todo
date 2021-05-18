@@ -17,7 +17,6 @@ export default async (req, res) => {
     let idToken;
     if (req.headers.authorization && req.headers.authorization.startsWith('Bearer ')) {
       console.log('Found "Authorization" header');
-      console.log(req.headers.authorization)
       // Read the ID Token from the Authorization header.
       idToken = req.headers.authorization.split('Bearer ')[1];
     } else if (req.cookies) {
@@ -40,9 +39,8 @@ export default async (req, res) => {
     }
   };
   const user = await validateFirebaseIdToken();
-  console.log(user);
   firebaseDB.collection('user').doc(user.uid).set({
-    email: req.user.email,
+    email: user.email,
   })
     .then(() => res.status(200).json({
       code: '200',

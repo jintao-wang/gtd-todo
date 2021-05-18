@@ -16,5 +16,6 @@ try {
     console.error('Firebase initialization error', err.stack);
   }
 }
-const app = firebase;
-export default app;
+const firebaseAuth = firebase.auth();
+firebaseAuth.useEmulator('http://localhost:9099');
+export default firebaseAuth;

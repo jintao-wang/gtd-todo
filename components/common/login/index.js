@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
-import app from '_firebase/client';
+import firebaseAuth from '_firebase/client';
 import { signedStore, emailStore } from 'store';
 import CurrentUser from 'data/user';
 
@@ -72,9 +72,9 @@ const Login = ({
   const handleSignIn = () => {
     setCanClick(false);
     setSignInState('登入中...');
-    app.auth().signInWithEmailAndPassword(emailInput.current.value, password.current.value)
+    firebaseAuth.signInWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
-        setUserInfo(app.auth().currentUser);
+        setUserInfo(firebaseAuth.currentUser);
       })
       .catch((e) => {
         setCanClick(true);
@@ -86,9 +86,9 @@ const Login = ({
   const handleSignUp = async () => {
     setCanClick(false);
     setSignUpState('注册中...');
-    app.auth().createUserWithEmailAndPassword(emailInput.current.value, password.current.value)
+    firebaseAuth.createUserWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
-        setUserInfo(app.auth().currentUser).then((token) => {
+        setUserInfo(firebaseAuth.currentUser).then((token) => {
           console.log(token);
           fetch('/api/user/register', {
             headers: {
