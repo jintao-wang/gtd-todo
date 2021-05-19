@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Drag from 'components/common/drag';
 import Today from 'components/widget/today';
-import Login from 'components/common/login';
+import Login from 'components/widget/login';
 import { signedStore, emailStore } from 'store';
 import firebaseAuth from '../_firebase/client';
 import CurrentUser from '../data/user';
