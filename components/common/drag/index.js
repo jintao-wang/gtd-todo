@@ -13,6 +13,18 @@ export default function Drag({
   });
 
   useEffect(() => {
+    console.log(children.type.name);
+  }, []);
+
+  useEffect(() => {
+    const widgetPositionString = localStorage.widgetPosition;
+    const widgetPosition = widgetPositionString && JSON.parse(widgetPositionString);
+    const currentPosition = widgetPosition?.[children.type.name];
+    if (currentPosition) {
+      dragRef.current.style.left = currentPosition.left;
+      dragRef.current.style.top = currentPosition.top;
+      return;
+    }
     if (!position) return;
     if (typeof position === 'object') {
       setPosition(position);
@@ -115,6 +127,13 @@ export default function Drag({
     dragRef.current.onmouseup = function () {
       document.removeEventListener('mousemove', onMouseMove);
       dragRef.current.onmouseup = null;
+      const widgetPositionString = localStorage.widgetPosition;
+      const widgetPosition = widgetPositionString ? JSON.parse(widgetPositionString) : {};
+      widgetPosition[children.type.name] = {
+        left: dragRef.current.style.left,
+        top: dragRef.current.style.top,
+      };
+      localStorage.widgetPosition = JSON.stringify(widgetPosition);
     };
   };
 
