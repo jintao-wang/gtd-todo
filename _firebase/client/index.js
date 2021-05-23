@@ -1,7 +1,6 @@
 import firebase from 'firebase';
 
 try {
-  console.log(111)
   firebase.initializeApp({
     apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
     authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -18,5 +17,7 @@ try {
   }
 }
 const firebaseAuth = firebase.auth();
-firebaseAuth.useEmulator('http://localhost:9099');
+if (process.env.NODE_ENV === 'development') {
+  firebaseAuth.useEmulator('http://localhost:9099');
+}
 export default firebaseAuth;

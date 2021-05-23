@@ -3,7 +3,6 @@ const firebase = require('_firebase/server');
 export default async (req, res) => {
   const validateFirebaseIdToken = async () => {
     console.log('Check if request is authorized with Firebase ID token');
-
     if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer '))
       && !(req.cookies && req.cookies.__session)) {
       console.error('No Firebase ID token was passed as a Bearer token in the Authorization header.',
@@ -38,6 +37,9 @@ export default async (req, res) => {
     }
   };
   const user = await validateFirebaseIdToken();
+  if (!user) {
+    return;
+  }
   const actionsRef = firebase.app().firebaseDB.collection('actions');
   const todayStart = new Date();
   todayStart.setHours(0, 0, 0);
@@ -45,8 +47,8 @@ export default async (req, res) => {
   todayEnd.setHours(23, 59, 59);
   const actions = await actionsRef
     .where('user', '==', user.uid)
-    .where('date', '>=', todayStart)
-    .where('date', '<=', todayEnd)
+    .where('endDate', '>=', todayStart)
+    .where('endDate', '<=', todayEnd)
     .get();
   const result = [];
   actions.forEach((doc) => {

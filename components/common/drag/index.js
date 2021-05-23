@@ -13,10 +13,6 @@ export default function Drag({
   });
 
   useEffect(() => {
-    console.log(children.type.name);
-  }, []);
-
-  useEffect(() => {
     const widgetPositionString = localStorage.widgetPosition;
     const widgetPosition = widgetPositionString && JSON.parse(widgetPositionString);
     const currentPosition = widgetPosition?.[children.type.name];
@@ -166,8 +162,7 @@ Drag.defaultProps = {
 };
 
 const ContainerSC = styled('div', 'positionSC')`
-  box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
-  border-radius: 12px;
+  //box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
   height: fit-content;
   width: fit-content;
   position: absolute;

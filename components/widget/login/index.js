@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import firebaseAuth from '_firebase/client';
-import { signedStore, emailStore } from 'store';
+import {signedStore, emailStore} from 'store';
 import CurrentUser from 'data/user';
 
 const Login = ({

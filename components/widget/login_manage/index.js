@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import firebaseAuth from '_firebase/client';
-import { signedStore, emailStore } from 'store';
+import {signedStore, emailStore} from 'store';
 import CurrentUser from 'data/user';
 import Drag from '../../common/drag';
 import Login from '../login';
@@ -16,9 +16,9 @@ export default function LoginManage() {
       if (user) {
         CurrentUser.current = user;
         emailActions.setEmail(CurrentUser.current.email);
-        signedActions.onChange(true);
         user.getIdToken(true).then((idToken) => {
           CurrentUser.current.token = idToken;
+          signedActions.onChange(true);
         }).catch((error) => {
           console.error(error);
         });

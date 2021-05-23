@@ -40,11 +40,16 @@ export default async (req, res) => {
     }
   };
   const user = await validateFirebaseIdToken();
-  firebase.app().firebaseDB.collection('actions').doc(`${user.uid}_${new Date().getTime()}`).set({
-    ...action,
-    date: new Date(action.timeStamp),
-    user: user.uid,
-  })
+  const getAction = () => {
+    if (action.startTimestamp) action.startDate = new Date(action.startTimestamp);
+    if (action.endTimestamp) action.endDate = new Date(action.endTimestamp);
+    action.user = user.uid;
+    action.addTime = new Date();
+    return action;
+  };
+  firebase.app().firebaseDB.collection('actions')
+    .doc(`${user.uid}_${new Date().getTime()}`)
+    .set(getAction())
     .then(() => res.status(200).json({
       code: '200',
       message: 'addSuccess',
