@@ -42,10 +42,12 @@ export default async (req, res) => {
     return;
   }
   const actionsRef = firebase.app().firebaseDB.collection('actions');
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0);
-  const todayEnd = new Date();
-  todayEnd.setHours(23, 59, 59);
+  const temple = new Date();
+  const timezoneOffsetServer = temple.getTimezoneOffset() / 60;
+  const timestamp = temple.getTime() + (timezoneOffsetServer - timezoneOffset) * 60 * 60;
+  const today = new Date(timestamp);
+  const todayStart = today.setHours(0, 0, 0);
+  const todayEnd = today.setHours(23, 59, 59);
   const actions = await actionsRef
     .where('user', '==', user.uid)
     .where('endDate', '>=', todayStart)
@@ -59,6 +61,9 @@ export default async (req, res) => {
   res.status(200).json({
     code: '200',
     message: result,
-    timezoneOffset: new Date().getTimezoneOffset() / 60,
+    date: {
+      todayStart,
+      todayEnd,
+    }
   });
 };
