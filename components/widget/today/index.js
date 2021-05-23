@@ -12,7 +12,10 @@ export default function Today({
 
   useEffect(() => {
     if (!signedState.isSigned) return;
-    fetch(`/api/action/today-actions/?timezoneOffset=${new Date().getTimezoneOffset() / 60}`, {
+    const today = new Date();
+    const todayStartTimestamp = today.setHours(0, 0, 0);
+    const todayEndTimestamp = today.setHours(23, 59, 59);
+    fetch(`/api/action/today-actions/?todayStartTimestamp=${todayStartTimestamp}&todayEndTimestamp=${todayEndTimestamp}`, {
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
       },

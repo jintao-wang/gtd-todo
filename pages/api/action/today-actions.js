@@ -1,7 +1,10 @@
 const firebase = require('_firebase/server');
 
 export default async (req, res) => {
-  const timezoneOffset = parseInt(req.query.timezoneOffset, 10);
+  const todayStartTimestamp = parseInt(req.query.todayStartTimestamp, 10);
+  const todayEndTimestamp = parseInt(req.query.todayEndTimestamp, 10);
+  console.log(todayStartTimestamp)
+  console.log(todayEndTimestamp)
   const validateFirebaseIdToken = async () => {
     console.log('Check if request is authorized with Firebase ID token');
     if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer '))
@@ -42,16 +45,10 @@ export default async (req, res) => {
     return;
   }
   const actionsRef = firebase.app().firebaseDB.collection('actions');
-  const temple = new Date();
-  const timezoneOffsetServer = temple.getTimezoneOffset() / 60;
-  const timestamp = temple.getTime() + (timezoneOffsetServer - timezoneOffset) * 60 * 60;
-  const today = new Date(timestamp);
-  const todayStart = today.setHours(0, 0, 0);
-  const todayEnd = today.setHours(23, 59, 59);
   const actions = await actionsRef
     .where('user', '==', user.uid)
-    .where('endDate', '>=', todayStart)
-    .where('endDate', '<=', todayEnd)
+    .where('endTimestamp', '>=', todayStartTimestamp)
+    .where('endTimestamp', '<=', todayEndTimestamp)
     .get();
   const result = [];
   actions.forEach((doc) => {
@@ -61,9 +58,5 @@ export default async (req, res) => {
   res.status(200).json({
     code: '200',
     message: result,
-    date: {
-      todayStart,
-      todayEnd,
-    }
   });
 };
