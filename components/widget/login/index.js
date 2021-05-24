@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import firebaseAuth from '_firebase/client';
-import {signedStore, emailStore} from 'store';
+import {signedStore, emailStore, triggerGetAction} from 'store';
 import CurrentUser from 'data/user';
 
 const Login = ({
@@ -16,6 +16,7 @@ const Login = ({
   const [canClick, setCanClick] = useState(true);
   const [, signedActions] = signedStore.useModel();
   const [, emailActions] = emailStore.useModel();
+  const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
   const emailInput = useRef(null);
   const password = useRef(null);
 
@@ -60,6 +61,7 @@ const Login = ({
     let idToken;
     try {
       idToken = currentUser.getIdToken(true);
+      triggerActions.onTrigger(!triggerGetActionState.trigger);
     } catch (e) {
       console.error(e);
     }
