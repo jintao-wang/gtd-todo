@@ -90,7 +90,7 @@ const Login = ({
       .then(() => {
         setUserInfo(firebaseAuth.currentUser).then((token) => {
           console.log(token);
-          fetch('/api/user/register', {
+          fetch('/api/user/register/', {
             headers: {
               Authorization: `Bearer ${token}`,
             },
