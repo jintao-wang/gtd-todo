@@ -70,6 +70,7 @@ export default function AddAction() {
     const date = [currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate()];
     const time = isStart ? ['00', '00'] : ['23', '59'];
 
+
     const parseDay = (dateDraft) => {
       const array = dateDraft.split('-');
       if (array.length === 3) {
@@ -106,7 +107,8 @@ export default function AddAction() {
       parseDay(array[0]);
       parseTime(array[1]);
     }
-    return new Date(`${date.join('-')} ${time.join(':')}`).getTime();
+    const parseDate = Date.parse(`${date.join('-')} ${time.join(':')}`.replace(/-/g, '/'));
+    return new Date(parseDate).getTime();
   };
 
   if (isAdd) {

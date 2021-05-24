@@ -51,7 +51,7 @@ export default function Today({
 
   const handleUpdateOneAction = (index) => {
     console.log(allDataRef.current[index]);
-    fetch('/api/action/update-one', {
+    fetch('/api/action/update-one/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
