@@ -45,7 +45,7 @@ export default function AddAction() {
   };
 
   const handleAddOneAction = () => {
-    fetch('/api/action/add-one', {
+    fetch('/api/action/add-one/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
