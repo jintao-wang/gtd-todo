@@ -144,7 +144,7 @@ export default function AddAction() {
 const ContainerSC = styled('div')`
   width: 400px;
   height: 80px;
-  background: white;
+  background: #313131;
   text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
   border-radius: 6px;
   padding: 10px 15px;
@@ -179,7 +179,9 @@ const InputSC = styled('input')`
   border: none;
   font-size: 14px;
   caret-color:rgb(248,93,84);
-  color: rgba(41, 41, 41, 1);
+  //color: rgba(41, 41, 41, 1);
+  color: rgba(200, 200, 200, 1);
+  background: #313131;
 `;
 
 const MenuSC = styled('div')`
@@ -197,7 +199,9 @@ const DatesSC = styled('div')`
     box-sizing: border-box;
     outline: none;
     border: none;
-    color: rgba(41, 41, 41, 1);
+    //color: rgba(41, 41, 41, 1);
+    color: rgba(200, 200, 200, 1);
     caret-color:rgb(248,93,84);
+    background: #313131;
   }
 `;
