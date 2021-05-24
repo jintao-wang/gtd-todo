@@ -40,18 +40,17 @@ export default async (req, res) => {
     }
   };
   const user = await validateFirebaseIdToken();
-  const documentId = `${user.uid}_${new Date().getTime()}`;
+  if (!user) {
+    return;
+  }
   const getAction = () => {
     if (action.startTimestamp) action.startDate = new Date(action.startTimestamp);
     if (action.endTimestamp) action.endDate = new Date(action.endTimestamp);
-    action.user = user.uid;
-    action.addTime = new Date();
-    action.documentId = documentId;
-    action.finish = false;
+    action.updateTime = new Date();
     return action;
   };
   firebase.app().firebaseDB.collection('actions')
-    .doc(documentId)
+    .doc(action.documentId)
     .set(getAction())
     .then(() => res.status(200).json({
       code: '200',

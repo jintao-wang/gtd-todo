@@ -11,6 +11,16 @@ export const signedStore = new Model({
   },
 });
 
+export const triggerGetAction = new Model({
+  initialState: {
+    trigger: false,
+  },
+  actions: {
+    onTrigger(bool) {
+      return { trigger: bool };
+    },
+  },
+});
 
 export const emailStore = new Model({
   initialState: {

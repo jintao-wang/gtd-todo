@@ -3,8 +3,6 @@ const firebase = require('_firebase/server');
 export default async (req, res) => {
   const todayStartTimestamp = parseInt(req.query.todayStartTimestamp, 10);
   const todayEndTimestamp = parseInt(req.query.todayEndTimestamp, 10);
-  console.log(todayStartTimestamp)
-  console.log(todayEndTimestamp)
   const validateFirebaseIdToken = async () => {
     console.log('Check if request is authorized with Firebase ID token');
     if ((!req.headers.authorization || !req.headers.authorization.startsWith('Bearer '))

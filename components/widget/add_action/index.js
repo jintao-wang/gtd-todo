@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import CurrentUser from '../../../data/user';
+import { triggerGetAction } from 'store';
 
 export default function AddAction() {
   const [isAdd, setIsAdd] = useState(false);
+  const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
   const isAddRef = useRef(false);
   const actionInputRef = useRef(null);
   const startTimeRef = useRef(null);
@@ -39,6 +41,7 @@ export default function AddAction() {
     actionInputRef.current = null;
     startTimeRef.current = null;
     endTimeRef.current = null;
+    triggerActions.onTrigger(!triggerGetActionState.trigger);
   };
 
   const handleAddOneAction = () => {

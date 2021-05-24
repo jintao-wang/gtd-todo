@@ -148,10 +148,8 @@ export default function Drag({
 
 Drag.propTypes = {
   children: PropTypes.node.isRequired,
-  position: PropTypes.shape({
-    left: PropTypes.string,
-    top: PropTypes.string,
-  }) || PropTypes.string,
+  // eslint-disable-next-line react/forbid-prop-types
+  position: PropTypes.any,
 };
 
 Drag.defaultProps = {
