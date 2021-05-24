@@ -104,6 +104,7 @@ export default function Today({
 
   return (
     <ContainerSC style={style}>
+      <PointSC src="/point.svg" />
       <TitleSC>
         <span>{`Today ${new Date().getMonth() + 1}-${new Date().getDate().toString()}`}</span>
       </TitleSC>
@@ -198,6 +199,13 @@ const ContainerSC = styled('div', 'style')`
     -ms-transform: matrix(-1, -0.1, 0, 1, 0, 0);
     transform: matrix(-1, -0.1, 0, 1, 0, 0);
   }
+`;
+
+const PointSC = styled('img')`
+  position: absolute;
+  right: 30px;
+  top: -5px;
+  width: 45px;
 `;
 
 const TitleSC = styled('div')`
