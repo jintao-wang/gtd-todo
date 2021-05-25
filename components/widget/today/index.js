@@ -1,4 +1,6 @@
-import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
+import React, {
+  useEffect, useLayoutEffect, useRef, useState,
+} from 'react';
 import styled from 'styled-components';
 import CurrentUser from 'data/user';
 import { signedStore, triggerGetAction } from 'store';
@@ -13,6 +15,8 @@ const stateColor = {
 };
 
 export default function Today({
+  newAction,
+  finishUpdateNewAction,
   style,
 }) {
   const [signedState] = signedStore.useModel();
@@ -23,6 +27,14 @@ export default function Today({
     preData: null,
     aimData: null,
   });
+
+  useEffect(() => {
+    if (!newAction) return;
+    updateAllData((draft) => {
+      draft.push(newAction);
+    });
+    finishUpdateNewAction?.();
+  }, [newAction]);
 
   useLayoutEffect(() => {
     allDataRef.current = allData;

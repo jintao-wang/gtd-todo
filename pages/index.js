@@ -8,6 +8,7 @@ import { getUrlParameter } from '../tools/common';
 
 export default () => {
   const [background, setBackground] = useState(null);
+  const [newAction, setNewAction] = useState(null);
 
   useEffect(() => {
     setBackground(getUrlParameter('background'));
@@ -17,10 +18,13 @@ export default () => {
     <ContainerSC background={background}>
       <LoginManage />
       <Drag position="left_center">
-        <AddAction />
+        <AddAction onAdd={(newAction) => setNewAction(newAction)} />
       </Drag>
       <Drag>
-        <Today />
+        <Today
+          newAction={newAction}
+          finishUpdateNewAction={() => setNewAction(null)}
+        />
       </Drag>
     </ContainerSC>
   );

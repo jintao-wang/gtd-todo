@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
-import CurrentUser from '../../../data/user';
 import { triggerGetAction } from 'store';
+import CurrentUser from '../../../data/user';
 
-export default function AddAction() {
+export default function AddAction({
+  onAdd,
+}) {
   const [isAdd, setIsAdd] = useState(false);
   const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
   const isAddRef = useRef(false);
@@ -45,17 +47,22 @@ export default function AddAction() {
   };
 
   const handleAddOneAction = () => {
+    const newAction = {
+      content: actionInputRef.current.value,
+      startTimestamp: parseToTimestamp(startTimeRef.current.value),
+      endTimestamp: parseToTimestamp(endTimeRef.current.value, false),
+    };
+    onAdd?.({
+      ...newAction,
+      documentId: 'temple',
+    });
     fetch('/api/action/add-one/', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
       },
       body: JSON.stringify({
-        action: {
-          content: actionInputRef.current.value,
-          startTimestamp: parseToTimestamp(startTimeRef.current.value),
-          endTimestamp: parseToTimestamp(endTimeRef.current.value, false),
-        },
+        action: newAction,
       }),
     })
       .then((res) => res.json())
@@ -69,7 +76,6 @@ export default function AddAction() {
     const currentDate = new Date();
     const date = [currentDate.getFullYear(), currentDate.getMonth() + 1, currentDate.getDate()];
     const time = isStart ? ['00', '00'] : ['23', '59'];
-
 
     const parseDay = (dateDraft) => {
       const array = dateDraft.split('-');
