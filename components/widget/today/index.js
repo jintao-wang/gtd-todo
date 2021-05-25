@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, {useEffect, useLayoutEffect, useRef, useState} from 'react';
 import styled from 'styled-components';
 import CurrentUser from 'data/user';
 import { signedStore, triggerGetAction } from 'store';
@@ -24,7 +24,7 @@ export default function Today({
     aimData: null,
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     allDataRef.current = allData;
   }, [allData]);
 
