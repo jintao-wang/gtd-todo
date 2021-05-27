@@ -62,7 +62,6 @@ export default function Today({
   }, [signedState, triggerGetActionState]);
 
   const handleUpdateOneAction = (index) => {
-    console.log(allDataRef.current[index]);
     fetch('/api/action/update-one/', {
       method: 'POST',
       headers: {
@@ -178,8 +177,6 @@ const ContainerSC = styled('div', 'style')`
   //box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
   //border-radius: 16px;
   //font-family: 'Comic Sans MS', cursive !important;
-  -webkit-app-region: drag;
-  -webkit-user-select: none;
   color: #565656;
   font-style: normal;
   letter-spacing: 0;
@@ -221,6 +218,7 @@ const PointSC = styled('img')`
   right: 30px;
   top: -5px;
   width: 45px;
+  -webkit-app-region: drag;
 `;
 
 const TitleSC = styled('div')`
