@@ -178,7 +178,8 @@ const ContainerSC = styled('div', 'style')`
   //box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
   //border-radius: 16px;
   //font-family: 'Comic Sans MS', cursive !important;
-  
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
   color: #565656;
   font-style: normal;
   letter-spacing: 0;
@@ -194,6 +195,8 @@ const ContainerSC = styled('div', 'style')`
   );
   font-family: 'Comic Sans MS', cursive !important;
   min-width: 200px;
+  height: 100%;
+  position: relative;
 
   ::after {
     content: "";

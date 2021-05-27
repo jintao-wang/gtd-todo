@@ -2,20 +2,18 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import firebaseAuth from '_firebase/client';
-import {signedStore, emailStore, triggerGetAction} from 'store';
+import { signedStore, emailStore, triggerGetAction } from 'store';
 import CurrentUser from 'data/user';
 
 const Login = ({
-  signType,
-  onClose,
-}) => {
+                 signType,
+                 onClose,
+               }) => {
   const [_signType, setSignType] = useState(signType);
   const [signInError, setSignInError] = useState('');
   const [signInState, setSignInState] = useState('登入');
   const [signUpState, setSignUpState] = useState('注册');
   const [canClick, setCanClick] = useState(true);
-  const [, signedActions] = signedStore.useModel();
-  const [, emailActions] = emailStore.useModel();
   const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
   const emailInput = useRef(null);
   const password = useRef(null);
@@ -54,10 +52,7 @@ const Login = ({
 
   const setUserInfo = async (currentUser) => {
     CurrentUser.current = currentUser;
-    emailActions.setEmail(CurrentUser.current.email);
     setCanClick(true);
-    signedActions.onChange(true);
-    onClose();
     let idToken;
     try {
       idToken = currentUser.getIdToken(true);
@@ -76,7 +71,9 @@ const Login = ({
     setSignInState('登入中...');
     firebaseAuth.signInWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
-        setUserInfo(firebaseAuth.currentUser);
+        setUserInfo(firebaseAuth.currentUser).then(() => {
+          onClose();
+        });
       })
       .catch((e) => {
         setCanClick(true);
@@ -91,7 +88,7 @@ const Login = ({
     firebaseAuth.createUserWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
         setUserInfo(firebaseAuth.currentUser).then((token) => {
-          console.log(token);
+          onClose();
           fetch('/api/user/register/', {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -112,24 +109,24 @@ const Login = ({
 
   return (
     <ContainerSC>
-      <CloseSC onClick={onClose}>
-        <svg
-          t="1612785238881"
-          className="icon"
-          viewBox="0 0 1024 1024"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          p-id="5388"
-          width="28"
-          height="28"
-        >
-          <path
-            d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z"
-            p-id="5389"
-            fill="#333333"
-          />
-        </svg>
-      </CloseSC>
+      {/* <CloseSC onClick={onClose}> */}
+      {/*  <svg */}
+      {/*    t="1612785238881" */}
+      {/*    className="icon" */}
+      {/*    viewBox="0 0 1024 1024" */}
+      {/*    version="1.1" */}
+      {/*    xmlns="http://www.w3.org/2000/svg" */}
+      {/*    p-id="5388" */}
+      {/*    width="28" */}
+      {/*    height="28" */}
+      {/*  > */}
+      {/*    <path */}
+      {/*      d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z" */}
+      {/*      p-id="5389" */}
+      {/*      fill="#333333" */}
+      {/*    /> */}
+      {/*  </svg> */}
+      {/* </CloseSC> */}
       <TitleSC>
         <LoginSC onClick={() => setSignType('signIn')} active={_signType === 'signIn'}>登入</LoginSC>
         <div className="point" />
@@ -196,6 +193,7 @@ const ContainerSC = styled.div`
   position: relative;
   user-select: none;
   padding-bottom: 20px;
+  background: white;
 `;
 const CloseSC = styled('div')`
   position: absolute;
@@ -204,23 +202,23 @@ const CloseSC = styled('div')`
   cursor: pointer;
 `;
 const TitleSC = styled('div')`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-    font-size: 22px;
-    font-family: -apple-system,SF UI Display,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
-    color:  #333333;
-    
-    .point {
-      margin-left: 20px;
-      margin-right: 20px;
-      width: 6px;
-      height: 6px;
-      background: #333333;
-      border-radius: 50%;
-    }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  font-size: 22px;
+  font-family: -apple-system,SF UI Display,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+  color:  #333333;
+
+  .point {
+    margin-left: 20px;
+    margin-right: 20px;
+    width: 6px;
+    height: 6px;
+    background: #333333;
+    border-radius: 50%;
+  }
+
 `;
 const LoginSC = styled('div', ['active'])`
   padding: 10px;
@@ -252,7 +250,7 @@ const FormLineSC = styled('div')`
     margin-left: 15px;
     outline:none;
     background: rgba(255,255,255,0);
-    
+
     ::-ms-input-placeholder {
       color: rgba(51,51,51, 0.5)
     }
