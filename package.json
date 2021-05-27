@@ -2,13 +2,16 @@
   "name": "vr-showroom",
   "version": "0.1.0",
   "private": true,
+  "main": "main.js",
   "scripts": {
     "dev": "next dev",
+    "electron-start": "electron .",
     "build": "next build",
     "start": "next start",
     "lint": "eslint --fix ."
   },
   "dependencies": {
+    "electron": "^13.0.1",
     "firebase": "^8.6.1",
     "firebase-admin": "^9.8.0",
     "immer": "^9.0.2",

@@ -21,7 +21,7 @@ const Navigation = () => {
     try {
       electron = require('electron');
     } catch (error) {
-      console.log('current is not electron eventment');
+      console.log('current is not electron env');
       console.log(error);
     }
 
@@ -36,6 +36,11 @@ const Navigation = () => {
       webPreferences: {
         nodeIntegration: true,
       },
+    });
+
+    globalShortcut.register('Command+1', () => {
+      win.setAlwaysOnTop(true);
+      win.show();
     });
 
     globalShortcut.register('Control+Enter', () => {

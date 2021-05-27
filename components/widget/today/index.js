@@ -181,7 +181,6 @@ const ContainerSC = styled('div', 'style')`
   font-style: normal;
   letter-spacing: 0;
   user-select: none;
-  cursor: pointer;
   padding: 8px 30px 8px 20px;
   background: linear-gradient(
           135deg, 
@@ -219,6 +218,7 @@ const PointSC = styled('img')`
   top: -5px;
   width: 45px;
   -webkit-app-region: drag;
+  cursor: pointer;
 `;
 
 const TitleSC = styled('div')`
@@ -238,6 +238,7 @@ const TodoItemSC = styled('div')`
   margin: 8px 0;
   font-size: 18px;
   justify-content: space-between;
+  cursor: pointer;
 `;
 
 const LeftPartSC = styled('div')`
