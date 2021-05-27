@@ -37,8 +37,7 @@ const Navigation = () => {
       },
     });
 
-    win.loadURL('http://localhost:3000/today').then((r) => console.log('load success!'));
-    win.webContents.openDevTools();
+    win.loadURL('/today').then((r) => console.log('load success!'));
     win.on('close', () => {
       win = null;
     });
