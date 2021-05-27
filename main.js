@@ -16,8 +16,9 @@ function createAdd() {
     },
   });
 
-  win.loadURL('http://localhost:3000/add-action').then((r) => console.log('load success!'));
-  win.webContents.openDevTools();
+  win.loadURL('https://gtd-todo.vercel.app/add-action').then((r) => console.log('load success!'));
+  // win.loadURL('http://localhost:3000/add-action').then((r) => console.log('load success!'));
+  // win.webContents.openDevTools();
 }
 
 function createHome() {
@@ -33,9 +34,9 @@ function createHome() {
     },
   });
 
-  // win.loadURL('https://gtd-todo.vercel.app').then((r) => console.log('load success!'));
-  win.loadURL('http://localhost:3000').then((r) => console.log('load success!'));
-  win.webContents.openDevTools();
+  win.loadURL('https://gtd-todo.vercel.app').then((r) => console.log('load success!'));
+  // win.loadURL('http://localhost:3000').then((r) => console.log('load success!'));
+  // win.webContents.openDevTools();
 
   globalShortcut.register('Control+Enter', () => {
     createAdd();

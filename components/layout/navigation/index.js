@@ -39,7 +39,7 @@ const Navigation = () => {
         enableRemoteModule: true,
       },
     });
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
     globalShortcut.register('Command+1', () => {
       win.setAlwaysOnTop(true);
       win.show();
