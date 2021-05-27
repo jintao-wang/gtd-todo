@@ -37,7 +37,7 @@ const Navigation = () => {
       },
     });
 
-    win.loadURL('https://gtd-todo.vercel.app/today').then((r) => console.log('load success!'));
+    win.loadURL(`${window.location.origin}/today`).then((r) => console.log('load success!'));
     win.on('close', () => {
       win = null;
     });
