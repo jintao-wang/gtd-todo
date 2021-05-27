@@ -2,8 +2,6 @@ import React, {
   useEffect, useLayoutEffect, useRef, useState,
 } from 'react';
 import styled from 'styled-components';
-import CurrentUser from 'data/user';
-import { signedStore, triggerGetAction } from 'store';
 import { useImmer } from 'use-immer';
 import CircleLabel from '../../common/circle_label';
 
@@ -19,8 +17,6 @@ export default function Today({
   finishUpdateNewAction,
   style,
 }) {
-  const [signedState] = signedStore.useModel();
-  const [triggerGetActionState] = triggerGetAction.useModel();
   const [allData, updateAllData] = useImmer([]);
   const allDataRef = useRef(null);
   const [focusAction, updateFocusAction] = useImmer({
@@ -41,13 +37,12 @@ export default function Today({
   }, [allData]);
 
   useEffect(() => {
-    if (!signedState.isSigned) return;
     const today = new Date();
     const todayStartTimestamp = today.setHours(0, 0, 0);
     const todayEndTimestamp = today.setHours(23, 59, 59);
     fetch(`/api/action/today-actions/?todayStartTimestamp=${todayStartTimestamp}&todayEndTimestamp=${todayEndTimestamp}`, {
       headers: {
-        Authorization: `Bearer ${CurrentUser.current.token}`,
+        Authorization: `Bearer ${localStorage.token}`,
       },
     })
       .then((res) => res.json())
@@ -59,14 +54,13 @@ export default function Today({
           });
         });
       });
-  }, [signedState, triggerGetActionState]);
+  }, []);
 
   const handleUpdateOneAction = (index) => {
-    console.log(allDataRef.current[index]);
     fetch('/api/action/update-one/', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${CurrentUser.current.token}`,
+        Authorization: `Bearer ${localStorage.token}`,
       },
       body: JSON.stringify({
         action: allDataRef.current[index],
@@ -178,7 +172,8 @@ const ContainerSC = styled('div', 'style')`
   //box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
   //border-radius: 16px;
   //font-family: 'Comic Sans MS', cursive !important;
-  
+  -webkit-app-region: drag;
+  -webkit-user-select: none;
   color: #565656;
   font-style: normal;
   letter-spacing: 0;
@@ -194,6 +189,8 @@ const ContainerSC = styled('div', 'style')`
   );
   font-family: 'Comic Sans MS', cursive !important;
   min-width: 200px;
+  height: 100%;
+  position: relative;
 
   ::after {
     content: "";

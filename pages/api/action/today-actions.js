@@ -53,6 +53,8 @@ export default async (req, res) => {
     result.push(doc.data());
   });
 
+  console.log(333)
+
   res.status(200).json({
     code: '200',
     message: result,

@@ -39,7 +39,7 @@ class Model {
     const queues = [...this.queue];
     this.queue.length = 0;
     queues.forEach((setState) => {
-      setState(this.state); // 通知所有的组件数据变化
+      setState({ ...this.state }); // 通知所有的组件数据变化
     });
   }
 }

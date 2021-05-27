@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import PropTypes from 'prop-types';
 import firebaseAuth from '_firebase/client';
-import {signedStore, emailStore, triggerGetAction} from 'store';
+import { signedStore, emailStore, triggerGetAction } from 'store';
 import CurrentUser from 'data/user';
 
 const Login = ({
@@ -14,8 +14,6 @@ const Login = ({
   const [signInState, setSignInState] = useState('登入');
   const [signUpState, setSignUpState] = useState('注册');
   const [canClick, setCanClick] = useState(true);
-  const [, signedActions] = signedStore.useModel();
-  const [, emailActions] = emailStore.useModel();
   const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
   const emailInput = useRef(null);
   const password = useRef(null);
@@ -54,10 +52,7 @@ const Login = ({
 
   const setUserInfo = async (currentUser) => {
     CurrentUser.current = currentUser;
-    emailActions.setEmail(CurrentUser.current.email);
     setCanClick(true);
-    signedActions.onChange(true);
-    onClose();
     let idToken;
     try {
       idToken = currentUser.getIdToken(true);
@@ -76,7 +71,9 @@ const Login = ({
     setSignInState('登入中...');
     firebaseAuth.signInWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
-        setUserInfo(firebaseAuth.currentUser);
+        setUserInfo(firebaseAuth.currentUser).then(() => {
+          onClose();
+        });
       })
       .catch((e) => {
         setCanClick(true);
@@ -91,7 +88,7 @@ const Login = ({
     firebaseAuth.createUserWithEmailAndPassword(emailInput.current.value, password.current.value)
       .then(() => {
         setUserInfo(firebaseAuth.currentUser).then((token) => {
-          console.log(token);
+          onClose();
           fetch('/api/user/register/', {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -112,24 +109,24 @@ const Login = ({
 
   return (
     <ContainerSC>
-      <CloseSC onClick={onClose}>
-        <svg
-          t="1612785238881"
-          className="icon"
-          viewBox="0 0 1024 1024"
-          version="1.1"
-          xmlns="http://www.w3.org/2000/svg"
-          p-id="5388"
-          width="28"
-          height="28"
-        >
-          <path
-            d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z"
-            p-id="5389"
-            fill="#333333"
-          />
-        </svg>
-      </CloseSC>
+      {/* <CloseSC onClick={onClose}> */}
+      {/*  <svg */}
+      {/*    t="1612785238881" */}
+      {/*    className="icon" */}
+      {/*    viewBox="0 0 1024 1024" */}
+      {/*    version="1.1" */}
+      {/*    xmlns="http://www.w3.org/2000/svg" */}
+      {/*    p-id="5388" */}
+      {/*    width="28" */}
+      {/*    height="28" */}
+      {/*  > */}
+      {/*    <path */}
+      {/*      d="M810.666667 273.493333L750.506667 213.333333 512 451.84 273.493333 213.333333 213.333333 273.493333 451.84 512 213.333333 750.506667 273.493333 810.666667 512 572.16 750.506667 810.666667 810.666667 750.506667 572.16 512z" */}
+      {/*      p-id="5389" */}
+      {/*      fill="#333333" */}
+      {/*    /> */}
+      {/*  </svg> */}
+      {/* </CloseSC> */}
       <TitleSC>
         <LoginSC onClick={() => setSignType('signIn')} active={_signType === 'signIn'}>登入</LoginSC>
         <div className="point" />
@@ -196,6 +193,7 @@ const ContainerSC = styled.div`
   position: relative;
   user-select: none;
   padding-bottom: 20px;
+  background: white;
 `;
 const CloseSC = styled('div')`
   position: absolute;
