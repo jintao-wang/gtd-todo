@@ -17,7 +17,7 @@ try {
   }
 }
 const firebaseAuth = firebase.auth();
-if (process.env.NODE_ENV === 'development' ) {
+if (process.env.NODE_ENV === 'development') {
   firebaseAuth.useEmulator('http://localhost:9099');
 }
 export default firebaseAuth;

@@ -1,17 +1,23 @@
-const { app, BrowserWindow } = require('electron');
+const {
+  app, BrowserWindow, globalShortcut, ipcMain,
+} = require('electron');
 
-function createPostIt() {
+function createAdd() {
   const win = new BrowserWindow({
-    width: 400,
-    height: 300,
-    transparent: true,
+    width: 500,
+    height: 80,
+    // transparent: true,
     frame: false,
+    alwaysOnTop: true,
     webPreferences: {
+      contextIsolation: false,
       nodeIntegration: true,
+      enableRemoteModule: true,
     },
   });
 
-  win.loadURL('https://localhost:3000/today').then((r) => console.log('load success!'));
+  win.loadURL('http://localhost:3000/add-action').then((r) => console.log('load success!'));
+  win.webContents.openDevTools();
 }
 
 function createHome() {
@@ -27,11 +33,15 @@ function createHome() {
     },
   });
 
-  win.loadURL('https://gtd-todo.vercel.app').then((r) => console.log('load success!'));
-  // win.loadURL('http://localhost:3000').then((r) => console.log('load success!'));
+  // win.loadURL('https://gtd-todo.vercel.app').then((r) => console.log('load success!'));
+  win.loadURL('http://localhost:3000').then((r) => console.log('load success!'));
   win.webContents.openDevTools();
-}
 
+  globalShortcut.register('Control+Enter', () => {
+    createAdd();
+  });
+}
+app.disableHardwareAcceleration();
 app.whenReady().then(createHome);
 
 app.on('window-all-closed', () => {

@@ -26,7 +26,7 @@ const Navigation = () => {
     }
 
     if (!electron) return;
-    const { BrowserWindow, globalShortcut } = electron.remote;
+    const { BrowserWindow, globalShortcut, ipcMain } = electron.remote;
     let win = new BrowserWindow({
       width: 400,
       height: 300,
@@ -34,21 +34,21 @@ const Navigation = () => {
       frame: false,
       roundedCorners: false,
       webPreferences: {
+        contextIsolation: false,
         nodeIntegration: true,
+        enableRemoteModule: true,
       },
     });
-
+    win.webContents.openDevTools();
     globalShortcut.register('Command+1', () => {
       win.setAlwaysOnTop(true);
       win.show();
     });
 
-    globalShortcut.register('Control+Enter', () => {
-      win.setAlwaysOnTop(true);
-      win.show();
-    });
-
     win.loadURL(`${window.location.origin}/today`).then((r) => console.log('load success!'));
+    ipcMain.on('addActionMain', (event, message) => {
+      win.webContents.send('addActionFromMain', message);
+    });
     win.on('blur', () => {
       win.setAlwaysOnTop(false);
     });

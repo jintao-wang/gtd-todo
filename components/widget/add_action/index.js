@@ -3,27 +3,19 @@ import styled from 'styled-components';
 import { triggerGetAction } from 'store';
 import CurrentUser from '../../../data/user';
 
+let electron;
+
 export default function AddAction({
   onAdd,
 }) {
-  const [isAdd, setIsAdd] = useState(false);
   const [triggerGetActionState, triggerActions] = triggerGetAction.useModel();
-  const isAddRef = useRef(false);
   const actionInputRef = useRef(null);
   const startTimeRef = useRef(null);
   const endTimeRef = useRef(null);
 
   useEffect(() => {
-    isAddRef.current = isAdd;
-  }, [isAdd]);
-
-  useEffect(() => {
     const handleKeyListener = (e) => {
-      if (e.key === 'a' && e.ctrlKey) {
-        setIsAdd(true);
-        actionInputRef.current.focus();
-      }
-      if (e.key === 'Enter' && isAddRef.current) {
+      if (e.key === 'Enter') {
         if (actionInputRef.current.value) {
           handleAddOneAction();
         } else {
@@ -38,12 +30,31 @@ export default function AddAction({
     };
   }, []);
 
+  useEffect(() => {
+    try {
+      electron = require('electron');
+    } catch (error) {
+      console.log('current is not electron env');
+      console.log(error);
+    }
+    if (!electron) return;
+  }, []);
+
   const finishAddOne = () => {
-    setIsAdd(false);
     actionInputRef.current = null;
     startTimeRef.current = null;
     endTimeRef.current = null;
     triggerActions.onTrigger(!triggerGetActionState.trigger);
+    handleElectron();
+  };
+
+  const handleElectron = () => {
+    if (!electron) return;
+    const { ipcRenderer, remote } = electron;
+    ipcRenderer.send('addActionMain', {
+      isAdd: true,
+    });
+    remote.getCurrentWindow().close();
   };
 
   const handleAddOneAction = () => {
@@ -117,41 +128,38 @@ export default function AddAction({
     return new Date(parseDate).getTime();
   };
 
-  if (isAdd) {
-    return (
-      <ContainerSC>
-        <ContentSC>
-          <InputSC
-            ref={actionInputRef}
-            placeholder="action name"
-          />
-          <MenuSC>
-            <div />
-            <DatesSC>
-              <input
-                ref={startTimeRef}
-                type="text"
-                className="start"
-                placeholder="开始时间"
-              />
-              <input
-                ref={endTimeRef}
-                type="text"
-                className="end"
-                placeholder="结束时间"
-              />
-            </DatesSC>
-          </MenuSC>
-        </ContentSC>
-      </ContainerSC>
-    );
-  }
-  return null;
+  return (
+    <ContainerSC>
+      <ContentSC>
+        <InputSC
+          ref={actionInputRef}
+          placeholder="action name"
+        />
+        <MenuSC>
+          <div />
+          <DatesSC>
+            <input
+              ref={startTimeRef}
+              type="text"
+              className="start"
+              placeholder="开始时间"
+            />
+            <input
+              ref={endTimeRef}
+              type="text"
+              className="end"
+              placeholder="结束时间"
+            />
+          </DatesSC>
+        </MenuSC>
+      </ContentSC>
+    </ContainerSC>
+  );
 }
 
 const ContainerSC = styled('div')`
-  width: 400px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   background: #313131;
   text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
   border-radius: 6px;
@@ -159,6 +167,7 @@ const ContainerSC = styled('div')`
   box-sizing: border-box;
   position: relative;
   overflow: hidden;
+  -webkit-app-region: drag;
 `;
 
 const ContentSC = styled('div')`

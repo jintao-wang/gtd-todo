@@ -7,6 +7,8 @@ import { signedStore, triggerGetAction } from 'store';
 import { useImmer } from 'use-immer';
 import CircleLabel from '../../common/circle_label';
 
+const electron = require('electron');
+
 const stateColor = {
   overtime: '#ff435d',
   closeSoon: '#FFCB2C',
@@ -20,7 +22,8 @@ export default function Today({
   style,
 }) {
   const [signedState] = signedStore.useModel();
-  const [triggerGetActionState] = triggerGetAction.useModel();
+  const [update, setUpdate] = useState(false);
+  const updateRef = useRef(false);
   const [allData, updateAllData] = useImmer([]);
   const allDataRef = useRef(null);
   const [focusAction, updateFocusAction] = useImmer({
@@ -29,12 +32,18 @@ export default function Today({
   });
 
   useEffect(() => {
-    if (!newAction) return;
-    updateAllData((draft) => {
-      draft.push(newAction);
-    });
-    finishUpdateNewAction?.();
-  }, [newAction]);
+    if (!electron) return;
+    const { ipcRenderer } = electron;
+    const handleAddActionFromMain = (e, message) => {
+      updateRef.current = !updateRef.current;
+      setUpdate(updateRef.current);
+    };
+    ipcRenderer.on('addActionFromMain', handleAddActionFromMain);
+
+    return () => {
+      ipcRenderer.removeListener('addActionFromMain', handleAddActionFromMain);
+    };
+  }, []);
 
   useLayoutEffect(() => {
     allDataRef.current = allData;
@@ -59,7 +68,7 @@ export default function Today({
           });
         });
       });
-  }, [signedState, triggerGetActionState]);
+  }, [signedState, update]);
 
   const handleUpdateOneAction = (index) => {
     fetch('/api/action/update-one/', {
