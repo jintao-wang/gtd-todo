@@ -3,15 +3,6 @@ import styled from 'styled-components';
 import { signedStore, emailStore } from '../../../store';
 import firebaseAuth from '../../../_firebase/client';
 
-let electron;
-
-try {
-  electron = require('electron');
-} catch (error) {
-  console.log('current is not electron eventment');
-  console.log(error);
-}
-
 const Navigation = () => {
   const [signedState, signedActions] = signedStore.useModel();
   const [emailState, emailActions] = emailStore.useModel();
@@ -25,19 +16,39 @@ const Navigation = () => {
   };
 
   const generateTodayWindow = () => {
+    let electron;
+
+    try {
+      electron = require('electron');
+    } catch (error) {
+      console.log('current is not electron eventment');
+      console.log(error);
+    }
+
     if (!electron) return;
-    const { BrowserWindow } = electron.remote;
+    const { BrowserWindow, globalShortcut } = electron.remote;
+    // let alwaysOnTop = false;
     let win = new BrowserWindow({
       width: 400,
       height: 300,
       transparent: true,
       frame: false,
+      roundedCorners: false,
       webPreferences: {
         nodeIntegration: true,
       },
     });
 
+    globalShortcut.register('Control+Enter', () => {
+      // alwaysOnTop = !alwaysOnTop;
+      win.setAlwaysOnTop(true);
+      win.show();
+    });
+
     win.loadURL(`${window.location.origin}/today`).then((r) => console.log('load success!'));
+    win.on('blur', () => {
+      win.setAlwaysOnTop(false);
+    });
     win.on('close', () => {
       win = null;
     });
