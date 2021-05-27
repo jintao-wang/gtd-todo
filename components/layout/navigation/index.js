@@ -27,7 +27,6 @@ const Navigation = () => {
 
     if (!electron) return;
     const { BrowserWindow, globalShortcut } = electron.remote;
-    // let alwaysOnTop = false;
     let win = new BrowserWindow({
       width: 400,
       height: 300,
@@ -40,7 +39,6 @@ const Navigation = () => {
     });
 
     globalShortcut.register('Control+Enter', () => {
-      // alwaysOnTop = !alwaysOnTop;
       win.setAlwaysOnTop(true);
       win.show();
     });

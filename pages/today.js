@@ -38,8 +38,11 @@ export default () => {
 };
 
 const ContainerSC = styled('div', 'background')`
-  height: 100vh;
-  position: relative;
-  padding: 20px 10px;
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding-top: 6px;
   box-sizing: border-box;
 `;
