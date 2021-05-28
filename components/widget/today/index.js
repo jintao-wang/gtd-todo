@@ -190,18 +190,18 @@ const ContainerSC = styled('div', 'style')`
   font-style: normal;
   letter-spacing: 0;
   user-select: none;
-  padding: 8px 30px 8px 20px;
-  background: linear-gradient(
-          135deg, 
-          #ffff88 81%,
-          #ffff88 82%,
-          #ffff88 82%,
-          #ffffc6 100%
-  );
+  padding: 8px 1px 8px 20px;
+  background: linear-gradient(135deg,
+  #ffff88 81%,
+  #ffff88 82%,
+  #ffff88 82%,
+  #ffffc6 100%);
   font-family: 'Comic Sans MS', cursive !important;
   min-width: 200px;
   height: 100%;
   position: relative;
+  display: flex;
+  flex-direction: column;
 
   ::after {
     content: "";
@@ -240,6 +240,36 @@ const TitleSC = styled('div')`
 
 const TodoListSC = styled('div')`
   margin-top: 10px;
+  overflow: auto;
+  padding-right: 30px;
+
+  ::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  /* 滚动槽 */
+
+  ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  /* 滚动条滑块 */
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background:rgb(255, 215, 1);
+    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.6);
+  }
+
+  ::-webkit-scrollbar-thumb:window-inactive {
+    background: rgba(255, 215, 1, 0.4);
+  }
+
+  //-ms-overflow-style: none;
+  //::-webkit-scrollbar {
+  //  display: none;
+  //}
 `;
 
 const TodoItemSC = styled('div')`
