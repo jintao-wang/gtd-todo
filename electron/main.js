@@ -12,6 +12,7 @@ function createHome() {
     width: 1000,
     height: 600,
     titleBarStyle: 'hiddenInset',
+    // transparent: true,
     webPreferences: {
       contextIsolation: false,
       nodeIntegration: true, // 该选项启用Node API，可以在页面中使用node中的require方法
@@ -21,7 +22,7 @@ function createHome() {
   });
 
   win.loadURL(process.env.WINDOW_LOCARTION_ORIGIN).then((r) => console.log('load success!'));
-  // win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   // create window of createAdd
   globalShortcut.register('Control+Enter', () => {

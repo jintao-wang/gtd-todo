@@ -1,13 +1,11 @@
 import React, {
-  useEffect, useLayoutEffect, useRef, useState,
+  useEffect, useRef, useLayoutEffect, useState,
 } from 'react';
 import styled from 'styled-components';
+import { signedStore } from 'store';
 import CurrentUser from 'data/user';
-import { signedStore, triggerGetAction } from 'store';
 import { useImmer } from 'use-immer';
-import CircleLabel from '../../common/circle_label';
-
-const electron = require('electron');
+import CircleLabel from '../../../common/circle_label';
 
 const stateColor = {
   overtime: '#ff435d',
@@ -16,38 +14,15 @@ const stateColor = {
   finish: '#d0cece',
 };
 
-const TodoListHeight = 255;
 
-export default function Today({
-  newAction,
-  finishUpdateNewAction,
-  style,
-}) {
+export default function Collect() {
   const [signedState] = signedStore.useModel();
-  const [update, setUpdate] = useState(false);
-  const updateRef = useRef(false);
   const [allData, updateAllData] = useImmer([]);
   const allDataRef = useRef(null);
-  const todoListRef = useRef(null);
   const [focusAction, updateFocusAction] = useImmer({
     preData: null,
     aimData: null,
   });
-  const ipcRenderer = useRef(null);
-
-  useEffect(() => {
-    if (!electron) return;
-    ipcRenderer.current = electron.ipcRenderer;
-    const handleAddActionFromMain = (e, message) => {
-      updateRef.current = !updateRef.current;
-      setUpdate(updateRef.current);
-    };
-    ipcRenderer.current.on('addActionFromMain', handleAddActionFromMain);
-
-    return () => {
-      ipcRenderer.current.removeListener('addActionFromMain', handleAddActionFromMain);
-    };
-  }, []);
 
   useLayoutEffect(() => {
     allDataRef.current = allData;
@@ -55,10 +30,7 @@ export default function Today({
 
   useEffect(() => {
     if (!signedState.isSigned) return;
-    const today = new Date();
-    const todayStartTimestamp = today.setHours(0, 0, 0);
-    const todayEndTimestamp = today.setHours(23, 59, 59);
-    fetch(`/api/action/today-actions/?todayStartTimestamp=${todayStartTimestamp}&todayEndTimestamp=${todayEndTimestamp}`, {
+    fetch('/api/action/collection-actions/', {
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
       },
@@ -71,14 +43,8 @@ export default function Today({
             draft.push(data);
           });
         });
-        if (allData.message.length >= 5) {
-          const addHeight = (allData.message.length + 3) * 37 - TodoListHeight;
-          if (addHeight > 0 && electron) {
-            ipcRenderer.current.send('addWindowHeight', addHeight);
-          }
-        }
       });
-  }, [signedState, update]);
+  }, [signedState]);
 
   const handleUpdateOneAction = (index) => {
     fetch('/api/action/update-one/', {
@@ -94,6 +60,13 @@ export default function Today({
       .then((data) => {
         console.log('finish update');
       });
+  };
+
+  const getActionState = (endDate) => {
+    if (endDate - new Date().getTime() > 0) {
+      return 'closeSoon';
+    }
+    return 'overtime';
   };
 
   const handleActionDesClick = (data) => {
@@ -125,20 +98,14 @@ export default function Today({
     return `${hours}:${minutes}`;
   };
 
-  const getActionState = (endDate) => {
-    if (endDate - new Date().getTime() > 0) {
-      return 'closeSoon';
-    }
-    return 'overtime';
-  };
-
   return (
-    <ContainerSC style={style}>
-      <PointSC src="/point.svg" />
-      <TitleSC>
-        <span>{`Today ${new Date().getMonth() + 1}-${new Date().getDate().toString()}`}</span>
-      </TitleSC>
-      <TodoListSC ref={todoListRef}>
+    <ContainerSC>
+      <TitleSC>收件箱</TitleSC>
+      <SecondTitleSC>
+        <span className="total">{allData.length}</span>
+        <span>项</span>
+      </SecondTitleSC>
+      <TodoListSC>
         {
           allData.map((data, index) => (
             <TodoItemSC
@@ -187,78 +154,44 @@ export default function Today({
   );
 }
 
-const ContainerSC = styled('div', 'style')`
-  //color: rgb(255, 255, 255);
-  //text-shadow: 1px 2px 5px rgba(0, 0, 0, 0.5);
-  //user-select: none;
-  //cursor: pointer;
-  //padding: 8px 40px 8px 20px;
-  //box-shadow: 1px 1px 5px rgba(0,0,0,0.2);
-  //border-radius: 16px;
-  //font-family: 'Comic Sans MS', cursive !important;
-  color: #565656;
-  font-style: normal;
-  letter-spacing: 0;
-  user-select: none;
-  padding: 8px 30px 8px 20px;
-  background: linear-gradient(135deg,
-  #ffff88 81%,
-  #ffff88 82%,
-  #ffff88 82%,
-  #ffffc6 100%);
-  font-family: 'Comic Sans MS', cursive !important;
-  min-width: 200px;
+const ContainerSC = styled('div')`
+  width: 100%;
   height: 100%;
+  box-sizing: border-box;
   position: relative;
-  display: flex;
-  flex-direction: column;
-
-  ::after {
-    content: "";
-    position: absolute;
-    z-index: -1;
-    right: -0px;
-    bottom: 20px;
-    width: 200px;
-    height: 25px;
-    background: rgba(0, 0, 0, 0.2);
-    box-shadow: 2px 15px 5px rgb(0 0 0 / 40%);
-    -moz-transform: matrix(-1, -0.1, 0, 1, 0, 0);
-    -webkit-transform: matrix(-1, -0.1, 0, 1, 0, 0);
-    -o-transform: matrix(-1, -0.1, 0, 1, 0, 0);
-    -ms-transform: matrix(-1, -0.1, 0, 1, 0, 0);
-    transform: matrix(-1, -0.1, 0, 1, 0, 0);
-  }
-`;
-
-const PointSC = styled('img')`
-  position: absolute;
-  right: 30px;
-  top: -5px;
-  width: 45px;
-  -webkit-app-region: drag;
-  cursor: pointer;
 `;
 
 const TitleSC = styled('div')`
-  font-size: 24px;
+  font-size: 26px;
+  font-weight: 600;
+  color: rgb(125, 135, 179);
+`;
+
+const SecondTitleSC = styled('div')`
+  font-size: 15px;
   font-weight: 500;
-  position: relative;
-  display: flex;
-  align-items: center;
+  color: rgba(255, 255, 255, 0.6);
+  
+  .total {
+    margin-right: 5px;
+  }
 `;
 
 const TodoListSC = styled('div')`
   margin-top: 10px;
-  flex: 1;
+  width: 100%;
+  padding-right: 20px;
+  box-sizing: border-box;
 `;
 
 const TodoItemSC = styled('div')`
   display: flex;
-  padding: 5px 0;
-  font-size: 18px;
+  padding: 3px ;
+  font-size: 13px;
   justify-content: space-between;
   cursor: pointer;
+  width: 100%;
+  border-bottom: 1px rgb(57, 57, 57) solid;
 `;
 
 const LeftPartSC = styled('div')`
@@ -268,54 +201,49 @@ const LeftPartSC = styled('div')`
 `;
 
 const CircleLabelSC = styled('div')`
-  height: 26px;
+  height: 24px;
   display: flex;
   align-items: center;
-  padding-top: 1px;
 `;
 
 const TodoDesSC = styled('div', 'focus, pending, actionState')`
   margin-left: 8px;
-  min-height: 26px;
-  max-height: 26px;
+  min-height: 24px;
+  max-height: 24px;
   flex: 1;
   transition: max-height ${(props) => (props.focus ? '0.5s' : '0.3s')};
   overflow: hidden;
   text-decoration:${(props) => props.actionState === 'finish' && 'line-through'};
-  color: ${(props) => (props.actionState === 'finish' ? stateColor[props.actionState] : '#565656')};
+  color: ${(props) => (props.actionState === 'finish' ? stateColor[props.actionState] : 'rgb(166, 166, 166)')};
   ${(props) => {
     if (props.focus) {
       return {
         maxHeight: '130px',
         wordWrap: 'break-word',
+        lineHeight: '24px',
       };
     }
     if (props.pending) {
       return {
-        maxHeight: '26px',
+        maxHeight: '24px',
+        lineHeight: '24px',
       };
     }
     return {
       overflow: 'hidden',
       textOverflow: 'ellipsis',
       whiteSpace: 'nowrap',
-      maxHeight: '26px',
+      maxHeight: '24px',
+      lineHeight: '24px',
     };
   }}
 `;
 
-// const LineSC = styled('div')`
-//   height: 26px;
-//   display: flex;
-//   align-items: center;
-// `;
-
 const RightPartSC = styled('div')`
   display: flex;
   align-items: center;
-  height: 26px;
+  height: 24px;
   margin-left: 40px;
-  padding-top: 1px;
 `;
 const TodoEndTimeSC = styled('div', 'actionState')`
   font-size: 12px;

@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import LoginManage from 'components/widget/login_manage';
-import HomePage from 'components/pages/home_page';
+import Content from 'components/pages/home/content';
 import Navigation from 'components/layout/navigation';
 
 export default () => (
   <ContainerSC>
     <LoginManage />
-    <HomePage />
+    <Content />
     <Navigation />
   </ContainerSC>
 );
