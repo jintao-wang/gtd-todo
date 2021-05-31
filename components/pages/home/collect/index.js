@@ -14,7 +14,6 @@ const stateColor = {
   finish: '#d0cece',
 };
 
-
 export default function Collect() {
   const [signedState] = signedStore.useModel();
   const [allData, updateAllData] = useImmer([]);
@@ -84,18 +83,36 @@ export default function Collect() {
     }
   };
 
+  const checkToday = (date) => {
+    const _date = new Date(date);
+    const today = new Date().setHours(0, 0, 0);
+    return today <= _date.getTime();
+  };
+
   const getEndDate = (date) => {
     const _date = new Date(date);
-    // const isToday = new Date().getTime() - _date.getTime() < 86400000;
-    let hours = _date.getHours();
-    let minutes = _date.getMinutes();
-    if (hours.toString().length === 1) {
-      hours = `0${hours}`;
+    const isToday = checkToday(date);
+    if (isToday) {
+      let hours = _date.getHours();
+      let minutes = _date.getMinutes();
+      if (hours.toString().length === 1) {
+        hours = `0${hours}`;
+      }
+      if (minutes.toString().length === 1) {
+        minutes = `0${minutes}`;
+      }
+      return `${hours}:${minutes}`;
     }
-    if (minutes.toString().length === 1) {
-      minutes = `0${minutes}`;
+    const year = _date.getFullYear();
+    let month = _date.getMonth() + 1;
+    let day = _date.getDate();
+    if (month.toString().length === 1) {
+      month = `0${month}`;
     }
-    return `${hours}:${minutes}`;
+    if (day.toString().length === 1) {
+      day = `0${day}`;
+    }
+    return `${month}/${day}`;
   };
 
   return (
@@ -142,6 +159,7 @@ export default function Collect() {
               <RightPartSC>
                 <TodoEndTimeSC
                   actionState={data.finish ? 'finish' : getActionState(data.endTimestamp)}
+                  isToday={checkToday(data.endTimestamp)}
                 >
                   {getEndDate(data.endTimestamp)}
                 </TodoEndTimeSC>
@@ -245,10 +263,14 @@ const RightPartSC = styled('div')`
   height: 24px;
   margin-left: 40px;
 `;
-const TodoEndTimeSC = styled('div', 'actionState')`
+const TodoEndTimeSC = styled('div', 'actionState,isToday')`
   font-size: 12px;
   color: ${(props) => (props.actionState === 'finish' ? stateColor[props.actionState] : 'rgba(31,31,31,1)')};
   background: ${(props) => props.actionState !== 'finish' && stateColor[props.actionState]};
+  width: ${(props) => (props.isToday ? '48px' : '48px')};
   border-radius: 4px;
-  padding: 0 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16px;
 `;
