@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import styled from 'styled-components';
 import Today from 'components/widget/today';
 import firebaseAuth from '../_firebase/client';
@@ -18,6 +18,7 @@ export default () => {
         user.getIdToken(true).then((idToken) => {
           CurrentUser.current.token = idToken;
           signedActions.onChange(true);
+          document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
         }).catch((error) => {
           console.error(error);
         });

@@ -16,6 +16,8 @@ const stateColor = {
   finish: '#d0cece',
 };
 
+const TodoListHeight = 255;
+
 export default function Today({
   newAction,
   finishUpdateNewAction,
@@ -26,22 +28,24 @@ export default function Today({
   const updateRef = useRef(false);
   const [allData, updateAllData] = useImmer([]);
   const allDataRef = useRef(null);
+  const todoListRef = useRef(null);
   const [focusAction, updateFocusAction] = useImmer({
     preData: null,
     aimData: null,
   });
+  const ipcRenderer = useRef(null);
 
   useEffect(() => {
     if (!electron) return;
-    const { ipcRenderer } = electron;
+    ipcRenderer.current = electron.ipcRenderer;
     const handleAddActionFromMain = (e, message) => {
       updateRef.current = !updateRef.current;
       setUpdate(updateRef.current);
     };
-    ipcRenderer.on('addActionFromMain', handleAddActionFromMain);
+    ipcRenderer.current.on('addActionFromMain', handleAddActionFromMain);
 
     return () => {
-      ipcRenderer.removeListener('addActionFromMain', handleAddActionFromMain);
+      ipcRenderer.current.removeListener('addActionFromMain', handleAddActionFromMain);
     };
   }, []);
 
@@ -67,6 +71,12 @@ export default function Today({
             draft.push(data);
           });
         });
+        if (allData.message.length >= 5) {
+          const addHeight = (allData.message.length + 3) * 37 - TodoListHeight;
+          if (addHeight > 0 && electron) {
+            ipcRenderer.current.send('addWindowHeight', addHeight);
+          }
+        }
       });
   }, [signedState, update]);
 
@@ -128,7 +138,7 @@ export default function Today({
       <TitleSC>
         <span>{`Today ${new Date().getMonth() + 1}-${new Date().getDate().toString()}`}</span>
       </TitleSC>
-      <TodoListSC>
+      <TodoListSC ref={todoListRef}>
         {
           allData.map((data, index) => (
             <TodoItemSC
@@ -190,7 +200,7 @@ const ContainerSC = styled('div', 'style')`
   font-style: normal;
   letter-spacing: 0;
   user-select: none;
-  padding: 8px 1px 8px 20px;
+  padding: 8px 30px 8px 20px;
   background: linear-gradient(135deg,
   #ffff88 81%,
   #ffff88 82%,
@@ -240,41 +250,13 @@ const TitleSC = styled('div')`
 
 const TodoListSC = styled('div')`
   margin-top: 10px;
-  overflow: auto;
-  padding-right: 30px;
-
-  ::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  /* 滚动槽 */
-
-  ::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.3);
-    border-radius: 10px;
-  }
-
-  /* 滚动条滑块 */
-
-  ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background:rgb(255, 215, 1);
-    -webkit-box-shadow: inset006pxrgba(0, 0, 0, 0.6);
-  }
-
-  ::-webkit-scrollbar-thumb:window-inactive {
-    background: rgba(255, 215, 1, 0.4);
-  }
-
-  //-ms-overflow-style: none;
-  //::-webkit-scrollbar {
-  //  display: none;
-  //}
+  flex: 1;
+  //overflow: auto;
 `;
 
 const TodoItemSC = styled('div')`
   display: flex;
-  margin: 8px 0;
+  padding: 5px 0;
   font-size: 18px;
   justify-content: space-between;
   cursor: pointer;
@@ -282,6 +264,7 @@ const TodoItemSC = styled('div')`
 
 const LeftPartSC = styled('div')`
   display: flex;
+  flex: 1;
 `;
 
 const CircleLabelSC = styled('div')`
@@ -293,6 +276,8 @@ const CircleLabelSC = styled('div')`
 
 const TodoDesSC = styled('div', 'focus, pending, actionState')`
   margin-left: 8px;
+  flex: 1;
+  width: fit-content;
   max-width: 210px;
   min-height: 26px;
   max-height: 26px;
@@ -304,6 +289,7 @@ const TodoDesSC = styled('div', 'focus, pending, actionState')`
     if (props.focus) {
       return {
         maxHeight: '130px',
+        wordWrap: 'break-word',
       };
     }
     if (props.pending) {

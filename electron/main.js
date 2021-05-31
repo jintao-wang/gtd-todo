@@ -1,25 +1,11 @@
 const {
   app, BrowserWindow, globalShortcut, ipcMain,
 } = require('electron');
+const dotenv = require('dotenv');
+const { createAdd } = require('./addAction');
+const { createPostIt } = require('./postIt');
 
-function createAdd() {
-  const win = new BrowserWindow({
-    width: 500,
-    height: 80,
-    // transparent: true,
-    frame: false,
-    alwaysOnTop: true,
-    webPreferences: {
-      contextIsolation: false,
-      nodeIntegration: true,
-      enableRemoteModule: true,
-    },
-  });
-
-  // win.loadURL('https://gtd-todo.vercel.app/add-action').then((r) => console.log('load success!'));
-  win.loadURL('http://localhost:3000/add-action').then((r) => console.log('load success!'));
-  // win.webContents.openDevTools();
-}
+dotenv.config();
 
 function createHome() {
   const win = new BrowserWindow({
@@ -34,12 +20,19 @@ function createHome() {
     },
   });
 
-  // win.loadURL('https://gtd-todo.vercel.app').then((r) => console.log('load success!'));
-  win.loadURL('http://localhost:3000').then((r) => console.log('load success!'));
+  win.loadURL(process.env.WINDOW_LOCARTION_ORIGIN).then((r) => console.log('load success!'));
   // win.webContents.openDevTools();
 
+  // create window of createAdd
   globalShortcut.register('Control+Enter', () => {
     createAdd();
+  });
+
+  // create window of postIt
+  ipcMain.on('createPostIt', (event, message) => {
+    if (message) {
+      createPostIt();
+    }
   });
 }
 app.disableHardwareAcceleration();

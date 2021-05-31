@@ -3,9 +3,21 @@ import styled from 'styled-components';
 import { signedStore, emailStore } from '../../../store';
 import firebaseAuth from '../../../_firebase/client';
 
+let electron;
+
 const Navigation = () => {
   const [signedState, signedActions] = signedStore.useModel();
   const [emailState, emailActions] = emailStore.useModel();
+
+  useEffect(() => {
+    try {
+      electron = require('electron');
+    } catch (error) {
+      console.log('current is not electron env');
+      console.log(error);
+    }
+    if (!electron) return;
+  }, []);
 
   const handleLogout = () => {
     firebaseAuth.signOut().then(() => {
@@ -15,46 +27,10 @@ const Navigation = () => {
     });
   };
 
-  const generateTodayWindow = () => {
-    let electron;
-
-    try {
-      electron = require('electron');
-    } catch (error) {
-      console.log('current is not electron env');
-      console.log(error);
-    }
-
+  const handleElectronIpc = () => {
     if (!electron) return;
-    const { BrowserWindow, globalShortcut, ipcMain } = electron.remote;
-    let win = new BrowserWindow({
-      width: 400,
-      height: 300,
-      transparent: true,
-      frame: false,
-      roundedCorners: false,
-      webPreferences: {
-        contextIsolation: false,
-        nodeIntegration: true,
-        enableRemoteModule: true,
-      },
-    });
-    // win.webContents.openDevTools();
-    globalShortcut.register('Command+1', () => {
-      win.setAlwaysOnTop(true);
-      win.show();
-    });
-
-    win.loadURL(`${window.location.origin}/today`).then((r) => console.log('load success!'));
-    ipcMain.on('addActionMain', (event, message) => {
-      win.webContents.send('addActionFromMain', message);
-    });
-    win.on('blur', () => {
-      win.setAlwaysOnTop(false);
-    });
-    win.on('close', () => {
-      win = null;
-    });
+    const { ipcRenderer } = electron;
+    ipcRenderer.send('createPostIt', true);
   };
 
   return (
@@ -64,7 +40,7 @@ const Navigation = () => {
         <div className="describe">收集</div>
       </IconSC>
       <LoginSC
-        onClick={generateTodayWindow}
+        onClick={handleElectronIpc}
         onDoubleClick={handleLogout}
       >
         {
