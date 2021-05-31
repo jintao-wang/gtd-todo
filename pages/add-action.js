@@ -15,9 +15,9 @@ export default () => {
         CurrentUser.current = user;
         emailActions.setEmail(CurrentUser.current.email);
         user.getIdToken(true).then((idToken) => {
-          document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
           CurrentUser.current.token = idToken;
           signedActions.onChange(true);
+          // document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
         }).catch((error) => {
           console.error(error);
         });

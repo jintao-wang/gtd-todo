@@ -22,7 +22,7 @@ function createHome() {
   });
 
   win.loadURL(process.env.WINDOW_LOCARTION_ORIGIN).then((r) => console.log('load success!'));
-  win.webContents.openDevTools();
+  // win.webContents.openDevTools();
 
   // create window of createAdd
   globalShortcut.register('Control+Enter', () => {

@@ -20,7 +20,7 @@ export default function LoginManage() {
           emailActions.setEmail(CurrentUser.current.email);
           signedActions.onChange(true);
           localStorage.token = idToken;
-          document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
+          // document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
         }).catch((error) => {
           console.error(error);
         });
@@ -30,7 +30,7 @@ export default function LoginManage() {
         signedActions.onChange(false);
         setIsSignForm(true);
         localStorage.removeItem('token');
-        document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
+        // document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
       }
     });
   }, []);

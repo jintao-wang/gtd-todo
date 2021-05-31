@@ -67,6 +67,7 @@ export default function AddAction({
       ...newAction,
       documentId: 'temple',
     });
+    console.log(CurrentUser.current.token)
     fetch('/api/action/add-one/', {
       method: 'POST',
       headers: {

@@ -18,7 +18,7 @@ export default () => {
         user.getIdToken(true).then((idToken) => {
           CurrentUser.current.token = idToken;
           signedActions.onChange(true);
-          document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
+          // document.getElementsByClassName('firebase-emulator-warning')[0].style.display = 'none';
         }).catch((error) => {
           console.error(error);
         });
