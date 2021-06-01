@@ -29,7 +29,7 @@ export default function Collect() {
 
   useEffect(() => {
     if (!signedState.isSigned) return;
-    fetch('/api/action/collection-actions/', {
+    fetch('/api/action/collection-actions', {
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
       },
@@ -46,7 +46,7 @@ export default function Collect() {
   }, [signedState]);
 
   const handleUpdateOneAction = (index) => {
-    fetch('/api/action/update-one/', {
+    fetch('/api/action/update-one', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,

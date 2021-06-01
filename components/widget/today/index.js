@@ -58,7 +58,7 @@ export default function Today({
     const today = new Date();
     const todayStartTimestamp = today.setHours(0, 0, 0);
     const todayEndTimestamp = today.setHours(23, 59, 59);
-    fetch(`/api/action/today-actions/?todayStartTimestamp=${todayStartTimestamp}&todayEndTimestamp=${todayEndTimestamp}`, {
+    fetch(`/api/action/today-actions?todayStartTimestamp=${todayStartTimestamp}&todayEndTimestamp=${todayEndTimestamp}`, {
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
       },
@@ -81,7 +81,7 @@ export default function Today({
   }, [signedState, update]);
 
   const handleUpdateOneAction = (index) => {
-    fetch('/api/action/update-one/', {
+    fetch('/api/action/update-one', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${CurrentUser.current.token}`,
